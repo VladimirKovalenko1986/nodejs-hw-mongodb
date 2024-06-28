@@ -28,7 +28,7 @@ const setupServer = () => {
     });
   });
 
-  app.get('/contacts/:id', async (req, res) => {
+  app.get('/contacts/:contactId', async (req, res) => {
     try {
       const { contactId } = req.params;
 
