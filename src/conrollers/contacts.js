@@ -101,10 +101,8 @@ const deleteContactController = async (req, res, next) => {
       }),
     );
   }
-  res.status(200).json({
-    status: 200,
-    message: 'Delete contact successfully',
-    data: result,
+  res.status(204).json({
+    status: 204,
   });
 };
 
