@@ -1,13 +1,18 @@
 import { Schema, model } from 'mongoose';
+import {
+  emailFormate,
+  contactTypeList,
+} from '../constants/contact-constants.js';
+import { mongooseSaveError, setUpdateSetting } from './hooks.js';
 
-const contactsSchema = new Schema(
+const contactSchema = new Schema(
   {
-    name: { type: String, required: true },
-    phoneNumber: { type: String, required: true },
+    name: { type: String, required: [true, 'name must be'] },
+    phoneNumber: { type: String, required: [true, 'phoneNumber must be'] },
     email: {
       type: String,
-      match: [/\S+@\S+\.\S+/, 'is invalid'],
-      required: false,
+      match: [emailFormate, 'is invalid'],
+      required: [false, 'email must be'],
     },
     isFavourite: {
       type: Boolean,
@@ -15,7 +20,7 @@ const contactsSchema = new Schema(
     },
     contactType: {
       type: String,
-      enum: ['work', 'home', 'personal'],
+      enum: contactTypeList,
       default: 'personal',
     },
   },
@@ -25,6 +30,10 @@ const contactsSchema = new Schema(
   },
 );
 
-const Contact = model('Contact', contactsSchema);
+contactSchema.post('save', mongooseSaveError);
+contactSchema.pre('findOneAndUpdate', setUpdateSetting);
+contactSchema.post('findOneAndUpdate', mongooseSaveError);
+
+const Contact = model('Contact', contactSchema);
 
 export default Contact;
