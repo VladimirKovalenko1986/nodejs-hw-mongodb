@@ -6,9 +6,16 @@ import {
   deleteContact,
 } from '../services/contact-services.js';
 import createHttpError from 'http-errors';
+import parsePaginationParams from '../utils/parsePaginationParams.js';
+import parseSortParams from '../utils/parseSortParams.js';
+import { contactfieldList } from '../constants/contact-constants.js';
+import parseContactFilterParams from '../utils/parseContactFilterParams.js';
 
 const getContactsControllers = async (req, res) => {
-  const data = await getContacts();
+  const { page, perPage } = parsePaginationParams(req.query);
+  const { sortBy, sortOrder } = parseSortParams(req.query, contactfieldList);
+  const filter = parseContactFilterParams(req.query);
+  const data = await getContacts({ page, perPage, sortOrder, sortBy, filter });
 
   res.status(200).json({
     status: 200,
@@ -41,7 +48,6 @@ const getContactByIdControllers = async (req, res, next) => {
 
 const addContactControllers = async (req, res) => {
   const data = await addContact(req.body);
-
   res.status(201).json({
     status: 201,
     message: 'Successfully created a contact!',
@@ -101,10 +107,8 @@ const deleteContactController = async (req, res, next) => {
       }),
     );
   }
-  res.status(200).json({
-    status: 200,
-    message: 'Delete contact successfully',
-    data: result,
+  res.status(204).json({
+    status: 204,
   });
 };
 

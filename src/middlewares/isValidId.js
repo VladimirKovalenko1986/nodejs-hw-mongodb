@@ -8,7 +8,6 @@ const isValidId = (req, res, next) => {
       createHttpError(404, {
         status: 404,
         message: 'Contact not found',
-        data: { message: 'Contact not found' },
       }),
     );
   }
