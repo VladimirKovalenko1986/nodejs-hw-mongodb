@@ -1,11 +1,12 @@
 import { contactTypeList } from '../constants/contact-constants.js';
 
 const parseBoolian = (value) => {
-  if (typeof value !== 'string') return null;
+  if (typeof value !== 'string') return;
 
-  if (!['true', 'false'].includes(value.toLowerCase())) return null;
+  if (!['true', 'false'].includes(value)) return;
+  const parsedValue = Boolean(value);
 
-  return value.toLowerCase() === 'true';
+  return parsedValue;
 };
 
 const parseContactFilterParams = ({ contactType, isFavourite }) => {

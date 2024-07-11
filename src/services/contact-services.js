@@ -2,7 +2,7 @@ import Contact from '../db/Contact.js';
 import calcPaginationData from '../utils/calcPaginationData.js';
 
 const getContacts = async ({
-  filter = {},
+  filter,
   page,
   perPage,
   sortBy = '_id',
@@ -29,8 +29,8 @@ const getContacts = async ({
 
   const { totalPages, hasNextPage, hasPreviousPage } = calcPaginationData({
     total: totalItems,
-    page: page,
-    perPage: perPage,
+    page,
+    perPage,
   });
 
   return {
