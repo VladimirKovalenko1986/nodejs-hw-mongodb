@@ -2,7 +2,7 @@ import Contact from '../db/Contact.js';
 import calcPaginationData from '../utils/calcPaginationData.js';
 
 const getContacts = async ({
-  filter = {},
+  filter,
   page,
   perPage,
   sortBy = '_id',
@@ -24,13 +24,13 @@ const getContacts = async ({
     .limit(perPage)
     .sort({ [sortBy]: sortOrder });
 
-  const totalItems = await Contact.find().merge(databaseQuery).countDocuments();
+  const totalItems = await Contact.find().countDocuments();
   console.log('totalItems', totalItems);
 
   const { totalPages, hasNextPage, hasPreviousPage } = calcPaginationData({
     total: totalItems,
-    page: page,
-    perPage: perPage,
+    page,
+    perPage,
   });
 
   return {
