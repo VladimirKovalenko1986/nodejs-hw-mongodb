@@ -12,7 +12,6 @@ const contactSchema = new Schema(
     email: {
       type: String,
       match: [emailFormate, 'is invalid'],
-      required: [false, 'email must be'],
     },
     isFavourite: {
       type: Boolean,
