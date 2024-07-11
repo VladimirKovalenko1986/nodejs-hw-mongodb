@@ -24,7 +24,7 @@ const getContacts = async ({
     .limit(perPage)
     .sort({ [sortBy]: sortOrder });
 
-  const totalItems = await Contact.find().merge(databaseQuery).countDocuments();
+  const totalItems = await Contact.find().countDocuments();
   console.log('totalItems', totalItems);
 
   const { totalPages, hasNextPage, hasPreviousPage } = calcPaginationData({
