@@ -11,6 +11,10 @@ const getContacts = async ({
   const skip = (page - 1) * perPage;
   const databaseQuery = Contact.find();
 
+  if (filter.userId) {
+    databaseQuery.where('userId').equals(filter.userId);
+  }
+
   if (filter.contactType) {
     databaseQuery.where('contactType').equals(filter.contactType);
   }
@@ -44,7 +48,10 @@ const getContacts = async ({
   };
 };
 
-const getContactById = (id) => Contact.findById(id);
+// const getContactById = (id) => Contact.findById(id);
+const getContact = (id) => {
+  return Contact.findOne({ _id: id });
+};
 
 const addContact = (data) => Contact.create(data);
 
@@ -65,10 +72,4 @@ const upsertContact = async (filter, data, options = {}) => {
 
 const deleteContact = (filter) => Contact.findByIdAndDelete(filter);
 
-export {
-  getContacts,
-  getContactById,
-  addContact,
-  upsertContact,
-  deleteContact,
-};
+export { getContacts, getContact, addContact, upsertContact, deleteContact };
