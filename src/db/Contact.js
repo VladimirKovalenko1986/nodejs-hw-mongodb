@@ -22,6 +22,7 @@ const contactSchema = new Schema(
       enum: contactTypeList,
       default: 'personal',
     },
+    userId: { type: Schema.Types.ObjectId, ref: 'user', required: true },
   },
   {
     timestamps: true,
@@ -33,6 +34,6 @@ contactSchema.post('save', mongooseSaveError);
 contactSchema.pre('findOneAndUpdate', setUpdateSetting);
 contactSchema.post('findOneAndUpdate', mongooseSaveError);
 
-const Contact = model('Contact', contactSchema);
+const Contact = model('contact', contactSchema);
 
 export default Contact;

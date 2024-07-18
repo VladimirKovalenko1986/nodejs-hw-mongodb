@@ -1,6 +1,6 @@
 import {
   getContacts,
-  getContactById,
+  getContact,
   addContact,
   upsertContact,
   deleteContact,
@@ -12,9 +12,10 @@ import { contactfieldList } from '../constants/contact-constants.js';
 import parseContactFilterParams from '../utils/parseContactFilterParams.js';
 
 const getContactsControllers = async (req, res) => {
+  const { _id: userId } = req.user;
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query, contactfieldList);
-  const filter = parseContactFilterParams(req.query);
+  const filter = { ...parseContactFilterParams(req.query), userId };
   const data = await getContacts({ page, perPage, sortOrder, sortBy, filter });
 
   res.status(200).json({
@@ -25,9 +26,10 @@ const getContactsControllers = async (req, res) => {
 };
 
 const getContactByIdControllers = async (req, res, next) => {
+  const { _id: userId } = req.user;
   const { contactId } = req.params;
 
-  const data = await getContactById(contactId);
+  const data = await getContact({ _id: contactId, userId });
 
   if (!data) {
     return next(
@@ -47,7 +49,8 @@ const getContactByIdControllers = async (req, res, next) => {
 };
 
 const addContactControllers = async (req, res) => {
-  const data = await addContact(req.body);
+  const { _id: userId } = req.user;
+  const data = await addContact({ ...req.body, userId });
   res.status(201).json({
     status: 201,
     message: 'Successfully created a contact!',
@@ -57,7 +60,8 @@ const addContactControllers = async (req, res) => {
 
 const updateContactControllers = async (req, res) => {
   const { contactId } = req.params;
-  const data = await upsertContact({ _id: contactId }, req.body, {
+  const { _id: userId } = req.user;
+  const data = await upsertContact({ _id: contactId, userId }, req.body, {
     upsert: true,
   });
 
@@ -75,7 +79,8 @@ const updateContactControllers = async (req, res) => {
 
 const patcContactController = async (req, res, next) => {
   const { contactId } = req.params;
-  const result = await upsertContact({ _id: contactId }, req.body);
+  const { _id: userId } = req.user;
+  const result = await upsertContact({ _id: contactId, userId }, req.body);
 
   if (!result) {
     return next(
@@ -96,7 +101,8 @@ const patcContactController = async (req, res, next) => {
 
 const deleteContactController = async (req, res, next) => {
   const { contactId } = req.params;
-  const result = await deleteContact({ _id: contactId });
+  const { _id: userId } = req.user;
+  const result = await deleteContact({ _id: contactId, userId });
 
   if (!result) {
     return next(
