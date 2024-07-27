@@ -4,7 +4,7 @@ import {
   getContactByIdControllers,
   addContactControllers,
   updateContactControllers,
-  patcContactController,
+  patchContactController,
   deleteContactController,
 } from '../conrollers/contacts.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
@@ -15,6 +15,7 @@ import {
   contactAddSchem,
   contactUpdateSchem,
 } from '../validation/contact-schems.js';
+import upload from '../middlewares/upload.js';
 
 const contactsRouter = Router();
 contactsRouter.use(authenticate);
@@ -29,12 +30,16 @@ contactsRouter.get(
 
 contactsRouter.post(
   '/',
+  // upload.array('photo', 8) - якщо декілька файлів 8 - кількість файлів
+  // upload.filds([{'name': 'photo', 'maxCount': 1}]) - якщо декілька полів з декількамі кількістю файлів
+  upload.single('photo'),
   validateBody(contactAddSchem),
   ctrlWrapper(addContactControllers),
 );
 
 contactsRouter.put(
   '/:contactId',
+  upload.single('photo'),
   isValidId,
   validateBody(contactAddSchem),
   ctrlWrapper(updateContactControllers),
@@ -42,9 +47,10 @@ contactsRouter.put(
 
 contactsRouter.patch(
   '/:contactId',
+  upload.single('photo'),
   isValidId,
   validateBody(contactUpdateSchem),
-  ctrlWrapper(patcContactController),
+  ctrlWrapper(patchContactController),
 );
 
 contactsRouter.delete(

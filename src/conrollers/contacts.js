@@ -10,6 +10,11 @@ import parsePaginationParams from '../utils/parsePaginationParams.js';
 import parseSortParams from '../utils/parseSortParams.js';
 import { contactfieldList } from '../constants/contact-constants.js';
 import parseContactFilterParams from '../utils/parseContactFilterParams.js';
+import saveFileToPublicDir from '../utils/saveFileToPublicDir.js';
+import saveFileToCloudinary from '../utils/saveFileToCloudinary.js';
+import env from '../utils/env.js';
+
+const enable_cloudinary = env('ENABLE_CLOUDINARY');
 
 const getContactsControllers = async (req, res) => {
   const { _id: userId } = req.user;
@@ -50,7 +55,17 @@ const getContactByIdControllers = async (req, res, next) => {
 
 const addContactControllers = async (req, res) => {
   const { _id: userId } = req.user;
-  const data = await addContact({ ...req.body, userId });
+  let photo = '';
+
+  if (req.file) {
+    if (enable_cloudinary === 'true') {
+      photo = await saveFileToCloudinary(req.file, 'photos');
+    } else {
+      photo = await saveFileToPublicDir(req.file, 'photos');
+    }
+  }
+
+  const data = await addContact({ ...req.body, userId, photo });
   res.status(201).json({
     status: 201,
     message: 'Successfully created a contact!',
@@ -61,7 +76,23 @@ const addContactControllers = async (req, res) => {
 const updateContactControllers = async (req, res) => {
   const { contactId } = req.params;
   const { _id: userId } = req.user;
-  const data = await upsertContact({ _id: contactId, userId }, req.body, {
+
+  let photo = '';
+
+  if (req.file) {
+    if (enable_cloudinary === 'true') {
+      photo = await saveFileToCloudinary(req.file, 'photos');
+    } else {
+      photo = await saveFileToPublicDir(req.file, 'photos');
+    }
+  }
+
+  const updateData = { ...req.body, userId };
+  if (photo) {
+    updateData.photo = photo;
+  }
+
+  const data = await upsertContact({ _id: contactId, userId }, updateData, {
     upsert: true,
   });
 
@@ -77,10 +108,26 @@ const updateContactControllers = async (req, res) => {
   });
 };
 
-const patcContactController = async (req, res, next) => {
+const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
   const { _id: userId } = req.user;
-  const result = await upsertContact({ _id: contactId, userId }, req.body);
+
+  let photo = '';
+
+  if (req.file) {
+    if (enable_cloudinary === 'true') {
+      photo = await saveFileToCloudinary(req.file, 'photos');
+    } else {
+      photo = await saveFileToPublicDir(req.file, 'photos');
+    }
+  }
+
+  const updateData = { ...req.body, userId };
+  if (photo) {
+    updateData.photo = photo;
+  }
+
+  const result = await upsertContact({ _id: contactId, userId }, updateData);
 
   if (!result) {
     return next(
@@ -123,6 +170,6 @@ export {
   getContactByIdControllers,
   addContactControllers,
   updateContactControllers,
-  patcContactController,
+  patchContactController,
   deleteContactController,
 };

@@ -1,6 +1,7 @@
 import createHttpError from 'http-errors';
 import { signup, findUser } from '../services/auth-services.js';
 import { compareHash } from '../utils/hash.js';
+
 import {
   createSession,
   findSession,
