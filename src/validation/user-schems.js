@@ -12,4 +12,8 @@ const userSigninSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
-export { userSignupSchema, userSigninSchema };
+const userGoogleAuthCodeSchema = Joi.object({
+  code: Joi.string().required(),
+});
+
+export { userSignupSchema, userSigninSchema, userGoogleAuthCodeSchema };

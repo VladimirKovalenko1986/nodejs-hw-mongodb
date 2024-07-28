@@ -4,6 +4,7 @@ import validateBody from '../middlewares/validateBody.js';
 import {
   userSignupSchema,
   userSigninSchema,
+  userGoogleAuthCodeSchema,
 } from '../validation/user-schems.js';
 import {
   requestResetEmailSchema,
@@ -14,6 +15,8 @@ import {
   signinController,
   refreshConroller,
   logoutController,
+  getGoogleOAuthController,
+  authGoogleContrpller,
 } from '../conrollers/auth-controllers.js';
 import {
   requestResetEmailController,
@@ -32,6 +35,14 @@ authRouter.post(
   '/login',
   validateBody(userSigninSchema),
   ctrlWrapper(signinController),
+);
+
+authRouter.get('/get-oauth-url', ctrlWrapper(getGoogleOAuthController));
+
+authRouter.post(
+  '/confirm-google-auth',
+  validateBody(userGoogleAuthCodeSchema),
+  ctrlWrapper(authGoogleContrpller),
 );
 
 authRouter.post('/refresh', ctrlWrapper(refreshConroller));
