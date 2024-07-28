@@ -8,6 +8,7 @@ const TEMP_UPLOAD_DIR = path.join(process.cwd(), 'src', 'temp');
 const PUBLIC_DIR = path.join(process.cwd(), 'src', 'public');
 const PUBLIC_PHOTOS_DIR = path.join(process.cwd(), 'src', 'public', 'photos');
 // const PUBLIC_PHOTOS_DIR = path.resolve('src', 'public', 'photos');
+const SWAGGER_PATH = path.join(process.cwd(), 'docs', 'swagger.json');
 
 export {
   sortOrderList,
@@ -17,4 +18,5 @@ export {
   TEMP_UPLOAD_DIR,
   PUBLIC_DIR,
   PUBLIC_PHOTOS_DIR,
+  SWAGGER_PATH,
 };
