@@ -112,4 +112,5 @@ export {
   signinController,
   refreshConroller,
   logoutController,
+  setupResponseSession,
 };

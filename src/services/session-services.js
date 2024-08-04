@@ -15,6 +15,9 @@ const createSession = async (userId) => {
   const accessTokenValidUntil = new Date(Date.now() + ACCESS_TOKEN_LIFETIME);
   const refreshTokenValidUntil = new Date(Date.now() + REFRESH_TOKEN_LIFETIME);
 
+  console.log('Access Token:', accessToken);
+  console.log('Refresh Token:', refreshToken);
+
   return Session.create({
     userId,
     accessToken,
